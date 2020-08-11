@@ -4,7 +4,7 @@ package cn.edu.cqust.bean;
  * @project: HRMS
  * @author: Tang.F.C
  * @date: 2020-08-05 10:52
- * @desc:
+ * @desc: 测试push
  */
 @SuppressWarnings("unused")
 public class CustomerInfo {
