@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.cqust.dao.SignUpInfoDao">
+	
+	<parameterMap id="signUpInfoPM" type="cn.edu.cqust.bean.SignUpInfo"/>
+	<resultMap id="signUpInfoRM" type="cn.edu.cqust.bean.SignUpInfo"/>
+	<resultMap id="roSignUpListRM" type="cn.edu.cqust.bean.vo.RoSignUpList"/>
+	<parameterMap id="customerInfoPM" type="cn.edu.cqust.bean.CustomerInfo"/>
+	
+	<select id="findByMC1" resultMap="roSignUpListRM">
+		select
+		t3.id,
+		t2.name,
+		t2.idNumber,
+		t2.gender,
+		t2.age,
+		t2.phoneNumber,
+		t2.education,
+		t2.address,
+		t2.professionalSkills,
+		t2.hasCertificate,
+		t2.isDisability,
+		t1.recommendEnterprise,
+		t1.recommendJob,
+		t3.signUpTime,
+		t3.interviewTime,
+		t3.note
+		from phone_call_list as t1
+		inner join
+		(select
+		id,
+		name,
+		idNumber,
+		gender,
+		age,
+		phoneNumber,
+		education,
+		address,
+		professionalSkills,
+		hasCertificate,
+		isDisability
+		from customer_info
+		<where>
+			<if test="customerInfo.name != null">
+				and name like concat('%', #{customerInfo.name}, '%')
+			</if>
+			<if test="customerInfo.gender != null">
+				and idNumber like concat('%', #{customerInfo.idNumber}, '%')
+			</if>
+			<if test="customerInfo.phoneNumber != null">
+				and phoneNumber like concat('%', #{customerInfo.phoneNumber}, '%')
+			</if>
+		</where>
+		) as t2
+		on t1.customerId = t2.id
+		inner join
+		(select
+		id,
+		customerId,
+		phoneCallListId,
+		signUpTime,
+		interviewTime,
+		employeeId,
+		note
+		from sign_up_info) as t3
+		on t1.customerId = t3.customerId and
+		t1.employeeId = t3.employeeId and
+		t1.id = t3.phoneCallListId
+		inner join
+		(select id
+		from employee
+		where phone = #{employeePhone}) as t4
+		on t4.id = t3.id
+		limit #{startIndex}, 10;
+	</select>
+	
+	<select id="countByMC1" resultType="int">
+		select
+		count(t3.id)
+		from phone_call_list as t1
+		inner join
+		(select
+		id,
+		name,
+		idNumber,
+		gender,
+		age,
+		phoneNumber,
+		education,
+		address,
+		professionalSkills,
+		hasCertificate,
+		isDisability
+		from customer_info
+		<where>
+			<if test="customerInfo.name != null">
+				and name like concat('%', #{customerInfo.name}, '%')
+			</if>
+			<if test="customerInfo.gender != null">
+				and idNumber like concat('%', #{customerInfo.idNumber}, '%')
+			</if>
+			<if test="customerInfo.phoneNumber != null">
+				and phoneNumber like concat('%', #{customerInfo.phoneNumber}, '%')
+			</if>
+		</where>
+		) as t2
+		on t1.customerId = t2.id
+		inner join
+		(select
+		id,
+		customerId,
+		phoneCallListId,
+		signUpTime,
+		interviewTime,
+		employeeId,
+		note
+		from sign_up_info) as t3
+		on t1.customerId = t3.customerId and
+		t1.employeeId = t3.employeeId and
+		t1.id = t3.phoneCallListId
+		inner join
+		(select id
+		from employee
+		where phone = #{employeePhone}) as t4
+		on t4.id = t3.id;
+	</select>
+	
+	
+	<select id="findById" resultMap="signUpInfoRM">
+		select *
+		from sign_up_info
+		where id = #{id};
+	</select>
+	
+	
+	<update id="update">
+		update sign_up_info
+		<!--<trim prefix="set" suffixOverrides=",">
+			<if test="signUpTime != null">
+				signUpTime=#{signUpTime},
+			</if>
+			<if test="interviewTime != null">
+				interviewTime=#{interviewTime},
+			</if>
+			<if test="note != null">
+				note=#{note},
+			</if>
+		</trim>-->
+		<set>
+			<if test="signUpTime != null">
+				signUpTime=#{signUpTime},
+			</if>
+			<if test="interviewTime != null">
+				interviewTime=#{interviewTime},
+			</if>
+			<if test="note != null">
+				note=#{note}
+			</if>
+		</set>
+		where id = #{id};
+	</update>
+	
+	<insert id="insert">
+		insert into sign_up_info (signUpTime, interviewTime, customerId, note,
+		                          phoneCallListId, employeeId)
+		values (#{signUpTime}, #{interviewTime}, #{customerId}, #{note},
+		        #{phoneCallListId}, #{employeeId});
+	</insert>
+
+
+</mapper>

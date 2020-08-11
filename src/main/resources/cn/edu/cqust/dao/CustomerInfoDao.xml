@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.cqust.dao.CustomerInfoDao">
+	
+	<parameterMap id="customerInfoPM" type="cn.edu.cqust.bean.CustomerInfo"/>
+	<resultMap id="customerInfoRM" type="cn.edu.cqust.bean.CustomerInfo"/>
+	
+	<select id="findIdByState" resultType="int">
+		select id from hrms.customer_info
+		where state = #{state};
+	</select>
+	
+	<select id="findMaxId" resultType="int">
+		select max(id) from hrms.customer_info;
+	</select>
+	
+	<update id="update">
+		update hrms.customer_info
+		<trim prefix="set" suffixOverrides=",">
+			<if test="name != null "              >name=#{name},</if>
+			<if test="idNumber != null "          >idNumber=#{idNumber},</if>
+			<if test="gender != null "            >gender=#{gender},</if>
+			<if test="age != null "               >age=#{age},</if>
+			<if test="phoneNumber != null"        >phoneNumber=#{phoneNumber},</if>
+			<if test="education != null "         >education=#{education},</if>
+			<if test="address != null "           >address=#{address},</if>
+			<if test="professionalSkills != null ">professionalSkills=#{professionalSkills},</if>
+			<if test="hasCertificate != null "    >hasCertificate=#{hasCertificate},</if>
+			<if test="isDisability != null "      >isDisability=#{isDisability},</if>
+			<if test="sourceOfData != null "      >sourceOfData=#{sourceOfData},</if>
+			<if test="note != null "              >note=#{note},</if>
+			<if test="state != null"              >state=#{state},</if>
+			<if test="addedTime != null"          >addedTime=#{addedTime},</if>
+			<if test="addedPerson != null "       >addedPerson=#{addedPerson},</if>
+		</trim>
+		where id = #{id};
+	</update>
+
+
+</mapper>
